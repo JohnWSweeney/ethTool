@@ -11,24 +11,20 @@
 //#pragma comment (lib, "Mswsock.lib")
 //#pragma comment (lib, "AdvApi32.lib")
 
-int main()
+void openClientSocket(SOCKET* clientSocket)
 {
-	printf("ethTool v0.0.0\n\n");
-
 	WSADATA wsaData;
-	SOCKET connectSocket = INVALID_SOCKET;
 	struct addrinfo *host = NULL, *ptr = NULL, hints; //--
 
 	int result = 0;
-
 	result = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (result != 0)
 	{
 		printf("WSAStartup failed with error: %d\n", result);
 	}
 
-	connectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (connectSocket == INVALID_SOCKET)
+	*clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (*clientSocket == INVALID_SOCKET)
 	{
 		printf("error: %d", WSAGetLastError());
 	}
@@ -53,14 +49,14 @@ int main()
 
 	for (ptr = host; ptr != NULL; ptr = ptr->ai_next)
 	{
-		connectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-		if (connectSocket == INVALID_SOCKET)
+		*clientSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+		if (*clientSocket == INVALID_SOCKET)
 		{
 			printf("err: %d\n", WSAGetLastError());
 			WSACleanup();
 		}
 
-		result = connect(connectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+		result = connect(*clientSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
 		if (result != SOCKET_ERROR)
 		{
 			printf("connected to server.\n");
@@ -71,17 +67,30 @@ int main()
 
 	freeaddrinfo(host);
 
-	if (connectSocket == INVALID_SOCKET)
+	if (*clientSocket == INVALID_SOCKET)
 	{
 		printf("can't connect to server.\n");
 		WSACleanup();
 	}
+	else
+	{
+		printf("clientSocket good.\n");
+	}
+}
+
+int main()
+{
+	printf("ethTool v0.0.1\n\n");
+
+	int result = 0;
+	SOCKET clientSocket = INVALID_SOCKET;
+	openClientSocket(&clientSocket);
 
 	const char *sendbuf = "the quick brown fox jumped over the lazy dog";
-	result = send(connectSocket, sendbuf, (int)strlen(sendbuf), 0);
+	result = send(clientSocket, sendbuf, (int)strlen(sendbuf), 0);
 	printf("bytes sent: %d\n", result);
 
-	result = shutdown(connectSocket, SD_SEND);
+	result = shutdown(clientSocket, SD_SEND);
 	printf("result: %d\n", result);
 
 	printf("end\n");
