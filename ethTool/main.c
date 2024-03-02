@@ -1,17 +1,11 @@
-//#define WIN32_LEAN_AND_MEAN
-//#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
-//#include "ws2def.h"
-//#include <windows.h>
 
 #pragma comment (lib, "Ws2_32.lib")
-//#pragma comment (lib, "Mswsock.lib")
-//#pragma comment (lib, "AdvApi32.lib")
 
-void openClientSocket(SOCKET* clientSocket)
+void openClientSocket(SOCKET* clientSocket, int portNum)
 {
 	WSADATA wsaData;
 	struct addrinfo *host = NULL, *ptr = NULL, hints; //--
@@ -40,7 +34,10 @@ void openClientSocket(SOCKET* clientSocket)
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 
-	result = getaddrinfo(NULL, "1234", &hints, &host);
+	char portNumStr[16];
+	sprintf_s(portNumStr, sizeof(portNumStr), "%d", portNum);
+
+	result = getaddrinfo(NULL, portNumStr, &hints, &host);
 	if (result != 0)
 	{
 		WSACleanup();
@@ -80,11 +77,12 @@ void openClientSocket(SOCKET* clientSocket)
 
 int main()
 {
-	printf("ethTool v0.0.1\n\n");
+	printf("ethTool v0.0.2\n\n");
 
 	int result = 0;
 	SOCKET clientSocket = INVALID_SOCKET;
-	openClientSocket(&clientSocket);
+	int portNum = 1234;
+	openClientSocket(&clientSocket, portNum);
 
 	const char *sendbuf = "the quick brown fox jumped over the lazy dog";
 	result = send(clientSocket, sendbuf, (int)strlen(sendbuf), 0);
