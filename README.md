@@ -3,6 +3,9 @@
 C language TCP/IP diagnostic app.
 
 ## ChangeLog
+v0.0.3
+- Added tx function, tcp .h/.c files.
+
 v0.0.2
 - Added port number parameter to openClientSocket function.
 
