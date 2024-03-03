@@ -128,13 +128,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="commands.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="singlyLinkedList.c" />
     <ClCompile Include="tcp.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="commands.h" />
+    <ClInclude Include="singlyLinkedList.h" />
     <ClInclude Include="tcp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

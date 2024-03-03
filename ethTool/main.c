@@ -1,19 +1,21 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include "commands.h"
 #include "tcp.h"
 
 int main()
 {
-	printf("ethTool v0.0.3\n\n");
+	printf("ethTool v0.0.4\n\n");
 
 	int result = 0;
 	SOCKET clientSocket = INVALID_SOCKET;
-	int portNum = 1234;
-	openClientSocket(&clientSocket, portNum);
+	struct node* list = NULL;
+	getCommands(&list);
 
-	const char *sendbuf = "the quick brown fox jumped over the lazy dog";
-	tx(&clientSocket, sendbuf, (int)strlen(sendbuf));
+	int portNum = atoi(list->next);
+	openClientSocket(&clientSocket, portNum);
 	
+	struct node* curr = list->next->next;
+	tx(&clientSocket, curr->command, (int)strlen(curr->command));
 
 	result = shutdown(clientSocket, SD_SEND);
 	printf("result: %d\n", result);
