@@ -4,21 +4,22 @@
 
 int main()
 {
-	printf("ethTool v0.0.4\n\n");
+	printf("ethTool v0.0.5\n\n");
 
 	int result = 0;
 	SOCKET clientSocket = INVALID_SOCKET;
 	struct node* list = NULL;
-	getCommands(&list);
+	while (1)
+	{
+		getCommands(&list);
 
-	int portNum = atoi(list->next);
-	openClientSocket(&clientSocket, portNum);
-	
-	struct node* curr = list->next->next;
-	tx(&clientSocket, curr->command, (int)strlen(curr->command));
+		int portNum = atoi(list->next);
+		openClientSocket(&clientSocket, portNum);
 
-	result = shutdown(clientSocket, SD_SEND);
-	printf("result: %d\n", result);
+		struct node* curr = list->next->next;
+		tx(&clientSocket, curr->command, (int)strlen(curr->command));
 
-	printf("end\n");
+		result = shutdown(clientSocket, SD_SEND);
+		printf("\n\n");
+	}
 }

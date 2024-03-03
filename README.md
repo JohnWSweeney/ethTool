@@ -2,7 +2,16 @@
 
 C language TCP/IP diagnostic app.
 
+User input
+Token #:	Command:
+1			Server IP address
+2			Server port number
+3			Message
+
 ## ChangeLog
+v0.0.5
+- Added checkPortNum function to commands .h/.c to verify server port number is an integer.
+
 v0.0.4
 - Added singlyLinkedList .h/.c, commands .h/.c, getCommands function.
 

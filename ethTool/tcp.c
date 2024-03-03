@@ -29,7 +29,7 @@ void openClientSocket(SOCKET* clientSocket, int portNum)
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 
-	char portNumStr[16];
+	char portNumStr[16] = {" "};
 	sprintf_s(portNumStr, sizeof(portNumStr), "%d", portNum);
 
 	result = getaddrinfo(NULL, portNumStr, &hints, &host);
