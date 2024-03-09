@@ -1,72 +1,40 @@
 #include "tcp.h"
 
-void openClientSocket(SOCKET* clientSocket, int portNum)
+void openClientSocket(SOCKET* clientSocket, char serverIP, int portNum)
 {
 	WSADATA wsaData;
-	struct addrinfo *host = NULL, *ptr = NULL, hints; //--
-
-	int result = 0;
-	result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (result != 0)
 	{
 		printf("WSAStartup failed with error: %d\n", result);
+		return 1;
 	}
 
+	// initialize socket.
 	*clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (*clientSocket == INVALID_SOCKET)
 	{
-		printf("error: %d", WSAGetLastError());
-	}
-	else
-	{
-		printf("socket success.\n");
+		printf("Client socket failed with error: %d\n", WSAGetLastError());
+		return 1;
 	}
 
 	// server info.
-	ZeroMemory(&hints, sizeof(hints));
-	//memset(&hints, sizeof(hints))
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
+	struct sockaddr_in serverInfo;
+	serverInfo.sin_family = AF_INET;
+	serverInfo.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//serverInfo.sin_addr.s_addr = inet_addr(serverIP);
+	serverInfo.sin_port = htons(portNum);
 
-	char portNumStr[16] = {" "};
-	sprintf_s(portNumStr, sizeof(portNumStr), "%d", portNum);
-
-	result = getaddrinfo(NULL, portNumStr, &hints, &host);
-	if (result != 0)
+	// connect to server.
+	result = connect(*clientSocket, (SOCKADDR *)&serverInfo, sizeof(serverInfo));
+	if (result == SOCKET_ERROR)
 	{
-		WSACleanup();
-		printf("broke dat\n");
+		printf("Connect to server failed with error: %d\n", WSAGetLastError());
+		return 1;
 	}
-
-	for (ptr = host; ptr != NULL; ptr = ptr->ai_next)
+	else // connected to server.
 	{
-		*clientSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-		if (*clientSocket == INVALID_SOCKET)
-		{
-			printf("err: %d\n", WSAGetLastError());
-			WSACleanup();
-		}
-
-		result = connect(*clientSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-		if (result != SOCKET_ERROR)
-		{
-			printf("connected to server.\n");
-			continue;
-		}
-		break;
-	}
-
-	freeaddrinfo(host);
-
-	if (*clientSocket == INVALID_SOCKET)
-	{
-		printf("can't connect to server.\n");
-		WSACleanup();
-	}
-	else
-	{
-		printf("clientSocket good.\n");
+		return 0;
 	}
 }
 

@@ -4,7 +4,7 @@
 
 int main()
 {
-	printf("ethTool v0.0.5\n\n");
+	printf("ethTool v0.0.6\n\n");
 
 	int result = 0;
 	SOCKET clientSocket = INVALID_SOCKET;
@@ -14,7 +14,8 @@ int main()
 		getCommands(&list);
 
 		int portNum = atoi(list->next);
-		openClientSocket(&clientSocket, portNum);
+		char serverIP[] = "127.0.0.1";
+		openClientSocket(&clientSocket, serverIP, portNum);
 
 		struct node* curr = list->next->next;
 		tx(&clientSocket, curr->command, (int)strlen(curr->command));

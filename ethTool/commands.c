@@ -1,5 +1,14 @@
 #include "commands.h"
 
+void checkServerIP(struct node* list)
+{
+	if (list->command == "host")
+	{
+		strcpy_s(list->command, sizeof(list->command), "127.0.0.1");
+		printf("boop\n");
+	}
+}
+
 int checkPortNum(struct node* list)
 {
 	int result = atoi(list->next);
@@ -45,6 +54,7 @@ void getCommands(struct node** list)
 		}
 		addBack(list, temp);
 
+		checkServerIP(*list);
 		result = checkPortNum(*list);
 
 	} while (result == 0);
