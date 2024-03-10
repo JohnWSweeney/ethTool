@@ -4,23 +4,19 @@
 
 int main()
 {
-	printf("ethTool v0.0.6\n\n");
+	printf("ethTool v0.0.7\n\n");
 
-	int result = 0;
-	SOCKET clientSocket = INVALID_SOCKET;
+	int running = 1;
 	struct node* list = NULL;
-	while (1)
+	while (running)
 	{
 		getCommands(&list);
-
-		int portNum = atoi(list->next);
-		char serverIP[] = "127.0.0.1";
-		openClientSocket(&clientSocket, serverIP, portNum);
-
-		struct node* curr = list->next->next;
-		tx(&clientSocket, curr->command, (int)strlen(curr->command));
-
-		result = shutdown(clientSocket, SD_SEND);
-		printf("\n\n");
+		print(list);
+		running = checkExit(list);
+		if (running != 0)
+		{
+			int portNum = checkPortNum(list->next);
+			printf("portNum: %d\n", portNum);
+		}
 	}
 }

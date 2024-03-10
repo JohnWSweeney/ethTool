@@ -11,6 +11,9 @@ C TCP/IP diagnostic app.
 3: Message
 
 ## ChangeLog
+v0.0.7
+- x
+
 v0.0.6
 - Updated openClientSocket, added tx functions in tcp h/c.
 

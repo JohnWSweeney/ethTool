@@ -1,18 +1,27 @@
 #include "singlyLinkedList.h"
 
-struct node* init(char* command)
+int init(struct node** list, char* command)
 {
 	struct node* newNode = malloc(sizeof(struct node));
-	memcpy(newNode->command, command, sizeof(newNode->command));
-	newNode->next = NULL;
-	return newNode;
+	if (newNode != NULL)
+	{
+		memcpy(newNode->command, command, sizeof(newNode->command));
+		newNode->next = NULL;
+		*list = newNode;
+		return 0;
+	}
+	else
+	{
+		printf("Memory allocation failed.\n");
+		exit(EXIT_FAILURE);
+	}
 }
 
 int addBack(struct node** list, char* command)
 {
 	if (*list == NULL)
 	{
-		*list = init(command);
+		init(list, command);
 		return 0;
 	}
 
@@ -23,11 +32,19 @@ int addBack(struct node** list, char* command)
 		if (curr->next == NULL)
 		{
 			struct node* newNode = malloc(sizeof(struct node));
-			memcpy(newNode->command, command, sizeof(newNode->command));
-			curr->next = newNode;
-			newNode->next = NULL;
-			*list = head;
-			return 0;
+			if (newNode != NULL)
+			{
+				memcpy(newNode->command, command, sizeof(newNode->command));
+				curr->next = newNode;
+				newNode->next = NULL;
+				*list = head;
+				return 0;
+			}
+			else
+			{
+				printf("Memory allocation failed.\n");
+				exit(EXIT_FAILURE);
+			}
 		}
 		*list = curr->next;
 	}
@@ -44,6 +61,12 @@ int clear(struct node**list)
 		free(dummy);
 	}
 	return 0;
+}
+
+int isEmpty(struct node* list)
+{
+	if (list == NULL) return 1;
+	else return 0;
 }
 
 int print(struct node* list)
